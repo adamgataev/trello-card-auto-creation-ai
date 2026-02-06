@@ -1,25 +1,19 @@
 import flet as ft
 
+from router import Router
+from components.nav_bar import NavBar
 
-def main(page: ft.Page):
-    counter = ft.Text("0", size=50, data=0)
+async def main(page: ft.Page):
+    page.theme_mode = "dark"
 
-    def increment_click(e):
-        counter.data += 1
-        counter.value = str(counter.data)
+    page.appbar = NavBar(page)
+    my_router = Router(page)
 
-    page.floating_action_button = ft.FloatingActionButton(
-        icon=ft.Icons.ADD, on_click=increment_click
-    )
+    page.on_route_change = my_router.route_change
+
     page.add(
-        ft.SafeArea(
-            expand=True,
-            content=ft.Container(
-                content=counter,
-                alignment=ft.Alignment.CENTER,
-            ),
-        )
+        my_router.body
     )
+    await page.push_route('/')
 
-
-ft.run(main)
+ft.run(main, assets_dir="assets")
